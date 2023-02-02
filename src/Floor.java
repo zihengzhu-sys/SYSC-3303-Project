@@ -5,8 +5,10 @@ import java.util.Scanner;
 public class Floor extends Thread
 {
 
+	
 	private Scheduler scheduler;
 	private String inputLoc;
+	private Instruction instruction;
 	
 	public Floor(Scheduler scheduler, String inputLoc)
 	{
@@ -17,15 +19,28 @@ public class Floor extends Thread
 	
 	public void run()
 	{
-		Instruction instruction;
+		readInput();
+		System.out.println("Floor sending instructions");
+		scheduler.sendInstructionsFromFloor(instruction);
+		
+		instruction = scheduler.getInstructionForFloor();
+		
+		System.out.println("Floor has received Intructions: "+instruction.getText());
+		
+		
+	}
+	
+	private void readInput()
+	{
 		try {
 			File inputInstructions = new File(inputLoc);
 			Scanner scan = new Scanner(inputInstructions);
+			
+			scan.nextLine();
 			while (scan.hasNextLine())
 			{
 				String data = scan.nextLine();
-				String [] split = data.split("\\t");
-				instruction = new Instruction(split[0], Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+				instruction = new Instruction(data);
 				
 			}
 		} catch (FileNotFoundException e) {

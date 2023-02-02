@@ -2,6 +2,7 @@
 public class Elevator extends Thread
 {
 	private Scheduler scheduler;
+	private Instruction instruction;
 	
 	public Elevator (Scheduler scheduler)
 	{
@@ -11,6 +12,11 @@ public class Elevator extends Thread
 	public void run()
 	{
 		
+		instruction = scheduler.getInstructionForElevator();
+		
+		System.out.println("Elevator has received Intructions: "+instruction.getText());
+		
+		scheduler.sendInstructionsFromElevator(instruction);
 	}
 
 }

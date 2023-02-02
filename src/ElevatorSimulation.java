@@ -4,13 +4,15 @@ public class ElevatorSimulation {
 	public static void main (String [] args)
 	{
 		
+		Thread scheduler = new Scheduler ();
+		Thread elevator = new Elevator ((Scheduler) scheduler);
+		Thread floor = new Floor ((Scheduler) scheduler, "InputInstructions.txt");
 		
-		Scheduler scheduler = new Scheduler ();
-		Thread elevator = new Elevator (scheduler);
-		Thread floor = new Floor (scheduler, "C:\\Users\\aasay\\Desktop\\University Work\\Winter 3rd Year\\SYSC 3303\\Projects");
-		
+		scheduler.start();
 		elevator.start();
 		floor.start();
+		
+		
 		
 	}
 
