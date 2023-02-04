@@ -2,14 +2,14 @@
 public class Scheduler extends Thread
 {
 	Instruction instruction;
-	private boolean workToDoForElevator;
-	private boolean workToDoForFloor;
+	private boolean instructionForElevator;
+	private boolean instructionForFloor;
 	
 	public Scheduler()
 	{
 		instruction = null;
-		workToDoForElevator = false;
-		workToDoForFloor = false;
+		instructionForElevator = false;
+		instructionForFloor = false;
 	}
 	
 	public void run()
@@ -20,9 +20,9 @@ public class Scheduler extends Thread
 		}
 	}
 
-	public synchronized void sendInstructionsFromFloor(Instruction instruction) 
+	public synchronized void setInstructionsFromFloor(Instruction instruction) 
 	{
-		while (instruction != null && workToDoForFloor)
+		while (instructionForFloor || instructionForElevator)
 		{
 			try { 
                 wait();
@@ -31,15 +31,15 @@ public class Scheduler extends Thread
             }
 		}
 		
+		System.out.println("Scheduler received instructions from floor");
 		this.instruction = instruction;
-		workToDoForElevator = true;
-		System.out.println("Scheduler has instructions from floor");
+		instructionForElevator = true;
 		notifyAll();
 	}
 
 	public synchronized Instruction getInstructionForElevator() 
 	{
-		while (!workToDoForElevator)
+		while (!instructionForElevator)
 		{
 			try { 
                 wait();
@@ -49,14 +49,14 @@ public class Scheduler extends Thread
 		}
 		
 		System.out.println("Scheduler sending instructions to elevator");
-		workToDoForElevator = false;
+		instructionForElevator = false;
 		notifyAll();
 		return instruction;
 	}
 
-	public synchronized void sendInstructionsFromElevator(Instruction instruction) {
+	public synchronized void setInstructionsFromElevator(Instruction instruction) {
 		
-		while (workToDoForElevator)
+		while (instructionForElevator)
 		{
 			try { 
                 wait();
@@ -65,17 +65,16 @@ public class Scheduler extends Thread
             }
 		}
 		
-		this.instruction = instruction;
-		workToDoForElevator = false;
-		workToDoForFloor = true;
 		System.out.println("Scheduler received instructions from elevator");
+		this.instruction = instruction;
+		instructionForFloor = true; 
 		notifyAll();
 		
 	}
 	
 	public synchronized Instruction getInstructionForFloor() 
 	{
-		while (!workToDoForFloor)
+		while (!instructionForFloor)
 		{
 			try { 
                 wait();
@@ -85,7 +84,7 @@ public class Scheduler extends Thread
 		}
 		
 		System.out.println("Scheduler sending instructions to Floor");
-		workToDoForFloor = false;
+		instructionForFloor = false;
 		notifyAll();
 		return instruction;
 	}

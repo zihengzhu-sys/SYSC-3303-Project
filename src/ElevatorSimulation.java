@@ -3,16 +3,20 @@ public class ElevatorSimulation {
 	
 	public static void main (String [] args)
 	{
+
+		Thread elevatorThread, schedulerThread, floorThread;
 		
-		Thread scheduler = new Scheduler ();
-		Thread elevator = new Elevator ((Scheduler) scheduler);
-		Thread floor = new Floor ((Scheduler) scheduler, "InputInstructions.txt");
+		Scheduler scheduler = new Scheduler ();
+		ElevatorSubsystem elevatorSubsytem = new ElevatorSubsystem (scheduler);
+		FloorSubsystem floorSubsystem = new FloorSubsystem (scheduler, "InputInstructions.txt");
 		
-		scheduler.start();
-		elevator.start();
-		floor.start();
+		elevatorThread = new Thread (elevatorSubsytem);
+		floorThread = new Thread (floorSubsystem);
+		schedulerThread = new Thread (scheduler);
 		
-		
+		schedulerThread.start();
+		elevatorThread.start();
+		floorThread.start();
 		
 	}
 

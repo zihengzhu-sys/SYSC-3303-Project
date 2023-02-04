@@ -5,8 +5,9 @@ public class Instruction {
 	private int floor;
 	private int elevatorNum;
 	
-	private ButtonStatus buttonStatus;
 	public enum ButtonStatus {Up,Down};
+	private ButtonStatus buttonStatus;
+	
 	
 	public Instruction(String time, int floor, int elevatorNum, String buttonStatus)
 	{
@@ -44,11 +45,14 @@ public class Instruction {
 		this.elevatorNum = Integer.parseInt(split[3]);
 		
 	}
-
-	public String getText() {
-		
-		return "Time:"+time+", floor"+floor+", elevator num:"+elevatorNum
+	
+	@Override
+	public String toString()
+	{
+		String message = "Time:"+time+", Floor:"+floor+", Elevator Number:"+elevatorNum
 				+", Button:"+buttonStatus.toString();
+		return message;
+		
 	}
 
 }
